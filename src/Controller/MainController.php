@@ -47,5 +47,52 @@ class MainController extends AbstractController
             'form'=>$form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/update/{id}", name="update", methods={"GET","POST"})
+     */
+    public function update(Request $request, $id, CrudRepository $repo): Response
+    {   
+        $crud = $repo->find($id);
+        $form = $this->createForm(CrudType::class, $crud);
+        $form->handleRequest($request);
+        if ( $form->isSubmitted() && $form->isValid()) {
+            $sendDatabase =  $this->getDoctrine()->getManager();
+            $sendDatabase->persist($crud);
+            $sendDatabase->flush();
+
+            $this->addFlash('notice', 'Update réussie !!');
+
+            return $this->redirectToRoute("main");
+        }
+
+        return $this->render('main/updateForm.html.twig', [
+            'controller_name' => 'MainController',
+            'form'=>$form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete", methods={"GET","POST"})
+     */
+    public function delete(Request $request, $id, CrudRepository $repo): Response
+    {   
+        $crud = $repo->find($id);
+        $sendDatabase = $this->getDoctrine()->getManager();
+        $sendDatabase->remove($crud);
+        $sendDatabase->flush();
+
+        $this->addFlash('notice', 'Delete réussie !!');
+
+        return $this->redirectToRoute("main");
+
+        return $this->render('main/index.html.twig', [
+            'controller_name' => 'MainController',
+        ]);
+    }
+
+
+
+
 }
 
