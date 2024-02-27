@@ -66,10 +66,6 @@ class MainController extends AbstractController
             return $this->redirectToRoute("main");
         }
 
-        return $this->render('main/updateForm.html.twig', [
-            'controller_name' => 'MainController',
-            'form'=>$form->createView(),
-        ]);
     }
 
     /**
